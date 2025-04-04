@@ -7,6 +7,7 @@ struct task_info tasks[MAX_TASKS];
 int num_tasks = 0;
 int current_task_idx = -1;
 volatile uint32_t sheduler_ticks = 0;
+struct task reserved;
 
 void shedule() {
     sheduler_ticks++;
@@ -19,6 +20,7 @@ void shedule() {
     if (current_task_idx != -1 && tasks[current_task_idx].runned == 1) {
         if (tasks[current_task_idx].task) {
             switchuvm(&tasks[current_task_idx].task->tss, tasks[current_task_idx].task->stack.bottom, tasks[current_task_idx].task->pgdir);
+            tasks[current_task_idx].task->stack.context.eip = reserved.stack.context.eip;
             tasks[current_task_idx].runned = 0;
             swtch((void**)&tasks[current_task_idx].task->stack.context, vm.kernel_thread);
         }
@@ -36,6 +38,7 @@ void shedule() {
     switchuvm(&tasks[next_idx].task->tss, tasks[next_idx].task->stack.bottom, tasks[next_idx].task->pgdir);
     current_task_idx = next_idx;
     tasks[next_idx].runned = 1;
+    reserved.stack.context.eip = tasks[next_idx].task->stack.context.eip;
     swtch(&vm.kernel_thread, &tasks[next_idx].task->stack.context);
     sti();
 }
