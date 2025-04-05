@@ -4,7 +4,7 @@
 #include "cpu/memlayout.h"
 #include "kernel/mem.h"
 
-#define MAX_TASKS 10
+#define MAX_TASKS 100
 // Объявление структур
 struct context {
     uint32_t edi, esi, ebp, ebx;

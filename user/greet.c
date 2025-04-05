@@ -11,7 +11,7 @@ int main(void) {
     while (1)
     {
         i++;
-        if (i > 1000000000) break;
+        if (i > 100000000) break;
     }
     syscall(SYS_greet, 0);
     syscall(SYS_msleep, 0);
